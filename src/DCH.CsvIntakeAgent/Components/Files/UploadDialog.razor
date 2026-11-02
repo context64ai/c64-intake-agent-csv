@@ -1,0 +1,93 @@
+@using DCH.CsvIntakeAgent.Helpers
+@inject DialogService DialogService
+
+<RadzenStack Gap="1rem">
+    <RadzenText TextStyle="TextStyle.Body1">
+        Select one or more CSV files to upload:
+    </RadzenText>
+
+    <InputFile
+        OnChange="OnFilesChanged"
+        multiple
+        accept="@Constants.AllowedCsvExtension"
+        class="w-100"
+        data-test-id="upload-file-input"/>
+
+    @if (_selectedFiles?.Any() == true)
+    {
+        <RadzenCard Variant="Variant.Outlined" class="rz-mt-3">
+            <RadzenText TextStyle="TextStyle.Subtitle2" class="rz-mb-2">
+                Selected Files:
+            </RadzenText>
+
+            <RadzenStack Gap="0.5rem">
+                @foreach (var file in _selectedFiles)
+                {
+                    <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="1rem">
+                        <RadzenStack Style="flex: 1;">
+                            <RadzenText>@file.File.Name</RadzenText>
+                            <RadzenText TextStyle="TextStyle.Caption">
+                                @FileHelper.FormatFileSize(file.File.Size)
+                            </RadzenText>
+                        </RadzenStack>
+
+                        <RadzenFormField Text="Configuration Name" Style="min-width: 200px;">
+                            <RadzenTextBox @bind-Value="file.ConfigName" data-test-id="upload-config-name-input"/>
+                        </RadzenFormField>
+
+                        <RadzenFormField Text="Configuration Slug" Style="min-width: 150px;">
+                            <RadzenTextBox @bind-Value="file.ConfigSlug" data-test-id="upload-config-slug-input"/>
+                        </RadzenFormField>
+
+                        <RadzenButton
+                            Icon="close"
+                            Size="ButtonSize.ExtraSmall"
+                            ButtonStyle="ButtonStyle.Danger"
+                            Variant="Variant.Text"
+                            Click="@(() => RemoveFile(file))"
+                            data-test-id="upload-remove-file-button"/>
+                    </RadzenStack>
+                }
+            </RadzenStack>
+        </RadzenCard>
+    }
+
+    @if (_isUploading)
+    {
+        <RadzenProgressBar Value="@_uploadProgress" ShowValue="true" class="rz-mt-3"/>
+        <RadzenText TextStyle="TextStyle.Caption" class="rz-text-align-center">
+            @_uploadStatusText
+        </RadzenText>
+    }
+
+    @if (_uploadErrors?.Any() == true)
+    {
+        <RadzenAlert AlertStyle="AlertStyle.Danger" Variant="Variant.Flat" class="rz-mt-3">
+            <RadzenText TextStyle="TextStyle.Subtitle2" class="rz-mb-2">Upload Errors:</RadzenText>
+            <RadzenStack Gap="0.25rem">
+                @foreach (var error in _uploadErrors)
+                {
+                    <RadzenText TextStyle="TextStyle.Caption">• @error</RadzenText>
+                }
+            </RadzenStack>
+        </RadzenAlert>
+    }
+
+    <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="1rem" class="rz-mt-4">
+        <RadzenButton
+            Text="Upload Files"
+            Icon="upload"
+            ButtonStyle="ButtonStyle.Primary"
+            Click="@UploadFiles"
+            Disabled="@(!CanUpload)"
+            IsBusy="@_isUploading"
+            data-test-id="upload-submit-button"/>
+
+        <RadzenButton
+            Text="Cancel"
+            ButtonStyle="ButtonStyle.Light"
+            Click="@Cancel"
+            Disabled="@_isUploading"
+            data-test-id="upload-cancel-button"/>
+    </RadzenStack>
+</RadzenStack>

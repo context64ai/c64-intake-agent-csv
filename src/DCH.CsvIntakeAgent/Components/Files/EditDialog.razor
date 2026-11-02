@@ -1,0 +1,42 @@
+@if (_recordInfo != null)
+{
+    <RadzenStack Gap="1rem" Style="max-width: 600px;">
+        
+        <RadzenFormField Text="File Name">
+            <RadzenTextBox @bind-Value="_recordInfo.FileName" Disabled="true" Style="width: 100%;" data-test-id="edit-file-name-input" />
+        </RadzenFormField>
+
+        <RadzenFormField Text="Configuration Name">
+            <RadzenTextBox @bind-Value="_recordInfo.ConfigName" Style="width: 100%;" data-test-id="edit-config-name-input" />
+        </RadzenFormField>
+
+        <RadzenFormField Text="Configuration Slug">
+            <RadzenTextBox @bind-Value="_recordInfo.ConfigSlug" Style="width: 100%;" data-test-id="edit-config-slug-input" />
+        </RadzenFormField>
+
+        <RadzenFormField Text="Batch Size">
+            <RadzenNumeric @bind-Value="_recordInfo.BatchSize" Style="width: 100%;" data-test-id="edit-batch-size-input" />
+        </RadzenFormField>
+
+        <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="0.5rem">
+            <RadzenCheckBox @bind-Value="_recordInfo.IsEnabled" Name="IsEnabled" data-test-id="edit-is-enabled-checkbox" />
+            <RadzenLabel Text="Enabled" Component="IsEnabled" />
+        </RadzenStack>
+
+        <RadzenStack Orientation="Orientation.Horizontal" Gap="0.5rem" Style="margin-top: 1rem;">
+            <RadzenButton
+                Text="Save"
+                ButtonStyle="ButtonStyle.Primary"
+                Icon="save"
+                Click="@SaveChanges"
+                data-test-id="edit-save-button" />
+            <RadzenButton
+                Text="Cancel"
+                ButtonStyle="ButtonStyle.Light"
+                Icon="cancel"
+                Click="@Cancel"
+                data-test-id="edit-cancel-button" />
+        </RadzenStack>
+
+    </RadzenStack>
+}

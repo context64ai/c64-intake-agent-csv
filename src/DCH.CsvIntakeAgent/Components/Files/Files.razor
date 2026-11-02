@@ -1,0 +1,116 @@
+@page "/files"
+@attribute [Authorize]
+@using DCH.CsvIntakeAgent.Domain
+@using DCH.CsvIntakeAgent.Helpers
+@using Microsoft.AspNetCore.Authorization
+@inject DialogService DialogService
+@inject NotificationService NotificationService
+
+<PageTitle>CSV Files</PageTitle>
+
+<h1>CSV Files Management</h1>
+<RadzenButton
+    Icon="upload_file"
+    Text="Upload"
+    ButtonStyle="ButtonStyle.Primary"
+    Click="@OpenUploadDialog"
+    Style="margin-bottom: 10px;"
+    data-test-id="files-upload-button"/>
+
+<RadzenButton Icon="refresh"
+              ButtonStyle="ButtonStyle.Light"
+              title="Refresh"
+              Click="@RefreshFiles"
+              Style="margin-bottom: 10px;"
+              data-test-id="files-refresh-button"/>
+
+@if (_uploadedFiles?.Any() == true)
+{
+    <RadzenDataGrid
+        @ref="_filesGrid"
+        Data="@_uploadedFiles"
+        TItem="CsvRecord"
+        AllowColumnResize="true"
+        AllowAlternatingRows="true"
+        AllowFiltering="true"
+        AllowSorting="true"
+        AllowPaging="true"
+        PageSize="15">
+
+        <Columns>
+            <RadzenDataGridColumn TItem="CsvRecord" Property="Name" Title="File Name" Width="300px">
+                <Template Context="file">
+                    <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="0.5rem">
+                        <RadzenText>@file.Name</RadzenText>
+                    </RadzenStack>
+                </Template>
+            </RadzenDataGridColumn>
+
+            <RadzenDataGridColumn TItem="CsvRecord" Title="Configuration Name" Width="200px">
+                <Template Context="file">
+                    <RadzenText>@_configs.FirstOrDefault(c => c.CsvRecordId == file.Id)?.Name</RadzenText>
+                </Template>
+            </RadzenDataGridColumn>
+
+            <RadzenDataGridColumn TItem="CsvRecord" Property="Size" Title="Size" Width="120px">
+                <Template Context="file">
+                    <RadzenText>@FileHelper.FormatFileSize(file.Size)</RadzenText>
+                </Template>
+            </RadzenDataGridColumn>
+
+            <RadzenDataGridColumn TItem="CsvRecord" Title="Created By" Width="180px">
+                <Template Context="file">
+                    <RadzenText>@_configs.FirstOrDefault(c => c.CsvRecordId == file.Id)?.CreatedBy</RadzenText>
+                </Template>
+            </RadzenDataGridColumn>
+
+            <RadzenDataGridColumn TItem="CsvRecord" Title="Updated By" Width="180px">
+                <Template Context="file">
+                    <RadzenText>@_configs.FirstOrDefault(c => c.CsvRecordId == file.Id)?.UpdatedBy</RadzenText>
+                </Template>
+            </RadzenDataGridColumn>
+
+            <RadzenDataGridColumn TItem="CsvRecord" Title="Actions" Width="200px" Sortable="false" Filterable="false">
+                <Template Context="file">
+                    <RadzenStack Orientation="Orientation.Horizontal" Gap="0.5rem">
+                        <RadzenButton
+                            Icon="visibility"
+                            Size="ButtonSize.ExtraSmall"
+                            ButtonStyle="ButtonStyle.Light"
+                            Click="@(() => PreviewFile(file))"
+                            title="Preview"
+                            data-test-id="files-preview-button"/>
+
+                        <RadzenButton
+                            Icon="edit"
+                            Size="ButtonSize.ExtraSmall"
+                            ButtonStyle="ButtonStyle.Success"
+                            Click="@(() => EditCsvRecord(file))"
+                            title="Edit"
+                            data-test-id="files-edit-button"/>
+
+                        <RadzenButton
+                            Icon="delete"
+                            Size="ButtonSize.ExtraSmall"
+                            ButtonStyle="ButtonStyle.Danger"
+                            Click="@(() => DeleteCsvRecord(file))"
+                            title="Delete"
+                            data-test-id="files-delete-button"/>
+                    </RadzenStack>
+                </Template>
+            </RadzenDataGridColumn>
+        </Columns>
+    </RadzenDataGrid>
+}
+else
+{
+    <RadzenAlert
+        AlertStyle="AlertStyle.Info"
+        Variant="Variant.Flat"
+        Shade="Shade.Lighter"
+        class="rz-mt-4">
+        <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="1rem">
+            <RadzenText>No CSV files uploaded yet. Click "Upload" to get started.</RadzenText>
+        </RadzenStack>
+    </RadzenAlert>
+}

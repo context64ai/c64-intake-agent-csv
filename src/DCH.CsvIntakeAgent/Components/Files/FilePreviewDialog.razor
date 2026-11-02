@@ -1,0 +1,119 @@
+@using System.Linq
+@using DCH.CsvIntakeAgent.Helpers
+@inject DialogService DialogService
+
+<!-- Header Section -->
+<RadzenCard class="mb-3">
+    <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="1rem">
+        <RadzenIcon Icon="description" Style="font-size: 2rem;"/>
+        <div class="flex-grow-1">
+            <RadzenText TextStyle="TextStyle.H5" class="mb-1">@CsvRecord?.Name</RadzenText>
+            <RadzenStack Orientation="Orientation.Horizontal" Gap="2rem" class="rz-text-secondary-color">
+                <RadzenText TextStyle="TextStyle.Caption">
+                    <RadzenIcon Icon="storage" class="me-1"/>
+                    @FileHelper.FormatFileSize(CsvRecord?.Size ?? 0)
+                </RadzenText>
+                <RadzenText TextStyle="TextStyle.Caption">
+                    <RadzenIcon Icon="table_rows" class="me-1"/>
+                    @CsvRecord?.RowCount.ToString("N0") rows
+                </RadzenText>
+                <RadzenText TextStyle="TextStyle.Caption">
+                    <RadzenIcon Icon="schedule" class="me-1"/>
+                    @CsvRecord?.CreatedAt.ToString("yyyy-MM-dd HH:mm")
+                </RadzenText>
+            </RadzenStack>
+        </div>
+    </RadzenStack>
+</RadzenCard>
+
+<!-- Content Section -->
+<RadzenCard class="preview-content">
+    @if (_isLoading)
+    {
+        <!-- Loading State -->
+        <RadzenProgressBarCircular Value="100" ShowValue="false" Mode="ProgressBarMode.Indeterminate"
+                                   Size="ProgressBarCircularSize.Large"/>
+        <RadzenText TextStyle="TextStyle.Body1" class="mt-3">Loading preview data...</RadzenText>
+    }
+    else if (!string.IsNullOrEmpty(_errorMessage))
+    {
+        <!-- Error State -->
+        <RadzenAlert AlertStyle="AlertStyle.Danger" Variant="Variant.Flat" class="mb-0">
+            <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="0.5rem">
+                <RadzenIcon Icon="error"/>
+                <RadzenText>@_errorMessage</RadzenText>
+            </RadzenStack>
+        </RadzenAlert>
+    }
+    else if (_previewData?.Any() == true)
+    {
+        <!-- Headers Info -->
+        <RadzenText TextStyle="TextStyle.Subtitle1" class="mb-2">
+            CSV Headers (@(CsvRecord?.Header?.Length ?? 0) columns)
+        </RadzenText>
+        <RadzenStack Orientation="Orientation.Horizontal" Wrap="FlexWrap.Wrap" Gap="0.5rem">
+            @if (CsvRecord?.Header != null)
+            {
+                @foreach (var header in CsvRecord.Header)
+                {
+                    <RadzenBadge BadgeStyle="BadgeStyle.Info" Text="@header"/>
+                }
+            }
+        </RadzenStack>
+
+        <!-- Data Preview -->
+        <RadzenText TextStyle="TextStyle.Subtitle1" class="mb-2">
+            Data Preview (showing first @Constants.MaxPreviewRows rows)
+        </RadzenText>
+        <RadzenDataGrid Data="@_previewData"
+                        TItem="Dictionary<string, object>"
+                        AllowColumnResize="true"
+                        AllowSorting="false"
+                        AllowFiltering="false"
+                        AllowPaging="false"
+                        Density="Density.Compact"
+                        GridLines="DataGridGridLines.Both">
+            <Columns>
+                @if (_previewData.FirstOrDefault() is { } firstRow)
+                {
+                    @foreach (var column in firstRow.Keys)
+                    {
+                        <RadzenDataGridColumn TItem="Dictionary<string, object>"
+                                              Title="@column"
+                                              Resizable="true">
+                            <Template Context="data">
+                                <RadzenText class="rz-text-truncate"
+                                            title="@(data.ContainsKey(column) ? data[column]?.ToString() : "")">
+                                    @(data.ContainsKey(column) ? data[column]?.ToString() : "")
+                                </RadzenText>
+                            </Template>
+                        </RadzenDataGridColumn>
+                    }
+                }
+            </Columns>
+        </RadzenDataGrid>
+    }
+    else
+    {
+        <!-- No Data State -->
+        <RadzenAlert AlertStyle="AlertStyle.Warning" Variant="Variant.Flat" class="mb-0">
+            <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="0.5rem">
+                <RadzenIcon Icon="warning"/>
+                <RadzenText>No preview data available for this file.</RadzenText>
+            </RadzenStack>
+        </RadzenAlert>
+    }
+</RadzenCard>
+
+<!-- Action Buttons -->
+<RadzenButton Text="Close"
+              ButtonStyle="ButtonStyle.Primary"
+              Click="@(() => DialogService.Close())"
+              class="me-2 close-button"
+              data-test-id="preview-close-button"/>
+
+<style>
+    .close-button {
+        margin-top: 2rem; /* Adjust this value as needed */
+    }
+</style>

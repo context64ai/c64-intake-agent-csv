@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json.schemastore.org/launchsettings.json",
+  "profiles": {
+    "http": {
+      "commandName": "Project",
+      "dotnetRunMessages": true,
+      "launchBrowser": false,
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "Kestrel__Endpoints__Http__Url": "http://0.0.0.0:5015",
+        "OTEL_EXPORTER_OTLP_ENDPOINT": "http://otlp.local-dch.c64.ai:4317",
+        "POSTGRES_HOST": "postgresql",
+        "POSTGRES_PORT": "5432",
+        "POSTGRES_USER": "postgres",
+        "POSTGRES_PASSWORD": "",
+        "POSTGRES_DATABASE": "intake-agent-csv",
+        "BASE_PATH": "/intake-agent-csv/",
+        "DCH_BASE_URL": "https://local-dch.c64.ai/",
+        "DCH_KEYCLOAK_REALM": "develop",
+        "DCH_KEYCLOAK_URL": "https://local-dch.c64.ai/auth"
+      }
+    }
+  }
+}

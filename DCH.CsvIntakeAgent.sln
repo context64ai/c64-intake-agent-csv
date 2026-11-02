@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DCH.CsvIntakeAgent", "src\DCH.CsvIntakeAgent\DCH.CsvIntakeAgent.csproj", "{51F968C9-6150-48E9-8B2B-6EB4A7991F92}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SolutionFolder", "SolutionFolder", "{3C1A8430-53C1-4976-9CDB-A28E0D119DD9}"
+	ProjectSection(SolutionItems) = preProject
+		VERSION = VERSION
+		Dockerfile = Dockerfile
+		README.md = README.md
+		CHANGELOG.md = CHANGELOG.md
+		qodana.yaml = qodana.yaml
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DCH.CsvIntakeAgent.Tests", "src\DCH.CsvIntakeAgent.Tests\DCH.CsvIntakeAgent.Tests.csproj", "{80DF436D-01D3-4636-8C10-C8DC07D3A89C}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{51F968C9-6150-48E9-8B2B-6EB4A7991F92}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{51F968C9-6150-48E9-8B2B-6EB4A7991F92}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{51F968C9-6150-48E9-8B2B-6EB4A7991F92}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{51F968C9-6150-48E9-8B2B-6EB4A7991F92}.Release|Any CPU.Build.0 = Release|Any CPU
+		{80DF436D-01D3-4636-8C10-C8DC07D3A89C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{80DF436D-01D3-4636-8C10-C8DC07D3A89C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{80DF436D-01D3-4636-8C10-C8DC07D3A89C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{80DF436D-01D3-4636-8C10-C8DC07D3A89C}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
